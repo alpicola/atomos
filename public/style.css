@@ -1,0 +1,176 @@
+
+/* ------------------------------------
+    1. common
+   ------------------------------------ */
+
+a, a:link {
+	color: #000;
+	text-decoration: underline;
+}
+
+a:visited {
+	color: #111;
+	text-decoration: underline;
+}
+
+a:hover {
+	color: #991100;
+	text-decoration: underline;
+}
+
+h1, h2, h3 {
+	line-height: 1.1;
+	font-family: Georgia, 'bitstream vera serif', sans-serif;
+	font-weight: normal;
+	letter-spacing: -0.075em;
+	color: #000;
+}
+
+p, ul, ol, dl, pre, blockquote, table {
+	margin: 1.4em 0;
+}
+
+blockquote {
+	margin: 1.4em 4em 1.4em 3em;
+	padding: 0;
+	font-size: 90%;
+	line-height: 1.8;
+}
+
+code, kbd {
+	line-height: 1.15;
+	font-size: 90%;
+	font-family: "Lucida Console", Monaco, "Andale Mono", Consolas, monospace;
+	color: #444444;
+}
+
+pre {
+	margin: 1.5em 0;
+	padding: 0.5em 1.5em;
+	font-size: 90%;
+	border: 2px solid #d5d0d2;
+	overflow: auto;
+	color: #222;
+	background-color: #f4f5f5;
+}
+
+
+/* ------------------------------------
+    2. layout
+   ------------------------------------ */
+
+body {
+	margin: 0;
+	padding: 0;
+	line-height: 1.5;
+	font-size: 113%;
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+	color: #212122;
+	background-color: #fff;
+}
+
+#container {
+	margin: 0 auto;
+	width: 50em;
+}
+
+#header {
+	margin: 3em 0;
+	text-align: center;
+}
+
+#header h1 {
+	margin: 0;
+	line-height: 1.1;
+	font-size: 240%;
+}
+
+#header h1 a,
+#header h1 a:link,
+#header h1 a:visited,
+#header h1 a:hover {
+	color: #000;
+	text-decoration: none;
+	background: transparent;
+}
+
+#content .entry {
+	margin: 2em 0 2.5em 10.5em;
+	color: #414243;
+}
+
+#content .entry h2 {
+	margin: 1em 0;
+	line-height: 1.1;
+	font-size: 150%;
+}
+
+#content .meta {
+	margin-top: -1em;
+	color: #616263;
+	font-variant: small-caps;
+}
+
+#content .meta a {
+	color: #616263;
+}
+
+#content .published {
+	width: 13em;
+	margin-top: 0;
+	float: left;
+	font-size: 65%;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	text-align: center;
+	color: #616263;
+}
+
+#content .published .day {
+	display: block;
+	font-size: 250%;
+	font-family: Georgia, serif;
+	color: #414243;
+	line-height: 1.1;
+	margin-bottom: 0.1em;
+}
+
+#content ul.page {
+	margin: 1em 0 0;
+	padding: 0;
+	text-align: center;
+	font-family: Georgia, serif;
+	font-size: 110%;
+}
+
+#content ul.page li {
+	display: inline;
+	margin: 0 0.3em;
+}
+
+#content ul.page li a,
+#content ul.page li a:link,
+#content ul.page li a:visited {
+	color: #000;
+	text-decoration: none;
+	background: transparent;
+}
+
+#content ul.page li a:hover {
+	color: #000;
+	text-decoration: underline;
+	background: transparent;
+}
+
+#footer {
+	margin: 1em 0;
+	clear: both;
+	color: #555;
+	text-align: center;
+}
+
+#footer p {
+	margin: 0;
+	font-size: 80%;
+}
+

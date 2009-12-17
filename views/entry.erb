@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta http-equiv="Content-Script-Type" content="text/javascript" />
+		<title><%= @title %></title>
+		<link type="text/css" href="/style.css" rel="stylesheet" media="all" />
+		<link rel="alternate" title="Atom" type="application/atom+xml" href="/atom/" />
+	</head>
+	<body id="home">
+		<div id="container">
+			<div id="header">
+				<h1>
+					<a href="<%= @config.url + '/' %>"><%= @config.title %></a>
+				</h1>
+			</div>
+			<div id="content">
+				<div class="published">
+					<span class="day"><%= @entry.published.strftime("%Y-%m-%d") %></span>
+					posted at <%= @entry.published.strftime("%I:%M%p").sub(/^0/, '').downcase %>
+				</div>
+				<div class="entry">
+					<h2><%= @entry.title %></h2>
+					<div>
+						<%= @entry.html %>
+					</div>
+					<p class="meta">
+						<a href="<%= @entry.url %>">permalink</a>
+					</p>
+				</div>
+			</div>
+			<div id="footer">
+				<p>Copyright © 2009 by <%= @config.author %></p>
+				<p>powered by <a href="http://github.com/5ivestar/atomos">atomos</a></p>
+			</div>
+		</div>
+	</body>
+</html>
