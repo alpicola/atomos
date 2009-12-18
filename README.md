@@ -6,6 +6,8 @@ Atomos is an AtomPub Based minimal bloging engine implemented using Sinatra and 
 Features
 --------
 
+There are few features :-)
+
 * Markdown
 * blog post from the browser through AtomPub (using a userscript)
 
@@ -22,7 +24,6 @@ Requirements
 License
 -------
 
-Copyright 2009 Yasuhiro Fuse <fuse@5ivestar.org>
+Copyright 2009 Yasuhiro Fuse &lt;fuse@5ivestar.org&gt;
 
 MIT License
-
