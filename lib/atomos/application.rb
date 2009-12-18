@@ -143,7 +143,7 @@ module Atomos
 
 					timestamp, digest = header['nonce'].unpack('m')[0].split(' ', 2)
 					return unless md5(timestamp, @config.private_key) == digest &&
-												(Time.now - Time.iso8601(timestamp)) < 60
+					              (Time.now - Time.iso8601(timestamp)) < 60
 
 					header['a1'] = @config.password_digest
 					header['a2'] = md5(request.request_method, header['uri'])

@@ -10,7 +10,7 @@ Atomos::Application.configure do |app|
 		set :static, true
 
 		# configuration
-		set :url,    'http://localhost:9393'
+		set :url,    'http://localhost:4567'
 		set :title,  'Atomos Blog'
 		set :author, 'Anonymous'
 
