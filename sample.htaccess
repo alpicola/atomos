@@ -1,7 +1,11 @@
 AddHandler cgi-script cgi
-DirectoryIndex config.cgi
+DirectoryIndex dispatch.cgi
+
+<Files config.yaml>
+deny from all
+</Files>
 
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ config.cgi/$1 [L,QSA]
+RewriteRule ^(.*)$ dispatch.cgi/$1 [L,QSA]

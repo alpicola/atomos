@@ -48,8 +48,6 @@ module Atomos
 			set :title,  'Atomos Blog'
 			set :author, 'Anonymous'
 
-			set :database, 'sqlite3://%s/entries.db' % root
-
 			set :per_page, 10
 
 			set :timezone, nil

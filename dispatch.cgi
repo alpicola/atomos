@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH.unshift 'lib'
+
+require 'rubygems'
+require 'atomos'
+require 'yaml'
+
+ENV['PATH_INFO'] = '/' if ENV['PATH_INFO'].to_s.empty?
+
+opts = File.open('config.yaml') {|f| YAML.load(f) }
+opts.update(:run => false)
+
+Rack::Handler::CGI.run Atomos.new(opts)
