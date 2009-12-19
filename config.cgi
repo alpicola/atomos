@@ -1,9 +1,13 @@
+#!/usr/bin/env ruby
+
 $LOAD_PATH.unshift 'lib'
 
 require 'rubygems'
 require 'atomos'
 
 Atomos.configure do
+	set :run, false
+
 	set :url,    'http://localhost:4567'
 	set :title,  'Atomos Blog'
 	set :author, 'Anonymous'
@@ -27,4 +31,6 @@ Atomos.configure do
 	set :private_key,     ''
 end
 
-run Atomos.new
+ENV['PATH_INFO'] = '/' if ENV['PATH_INFO'].to_s.empty?
+
+Rack::Handler::CGI.run Atomos.new
