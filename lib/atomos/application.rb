@@ -14,23 +14,18 @@ module Atomos
 			keys = []
 			if path.respond_to? :to_str
 				special_chars = %w{. + ( )}
+				patterns = { 'year' => /\d{4}/, 'month' => /\d{2}/, 'day' => /\d{2}/ }
 				pattern =
-					path.to_str.gsub(/((:\w+)|[\*#{special_chars.join}])/) do |match|
+					path.to_str.gsub(/(:(\w+)|[\*#{special_chars.join}])/) do |match|
 						case match
 						when "*"
 							keys << 'splat'
 							"(.*?)"
 						when *special_chars
 							Regexp.escape(match)
-						when ':year'
-							keys << $2[1..-1]
-							"(\\d{4})"
-						when ':month', ':day'
-							keys << $2[1..-1]
-							"(\\d{2})"
 						else
-							keys << $2[1..-1]
-							"([^/?&#]+)"
+							keys << $2
+							"(#{patterns[$2] || '[^/?&#]+'})"
 						end
 					end
 				[/^#{pattern}$/, keys]
@@ -41,6 +36,28 @@ module Atomos
 			else
 				raise TypeError, path
 			end
+		end
+
+		# default settings
+		configure do
+			set :root,   File.expand_path('../..', File.dirname(__FILE__))
+			set :run,    true
+			set :static, true
+
+			set :url,    'http://localhost:4567'
+			set :title,  'Atomos Blog'
+			set :author, 'Anonymous'
+
+			set :database, 'sqlite3://%s/entries.db' % root
+
+			set :per_page, 10
+
+			set :timezone, nil
+
+			set :username,        'admin'
+			set :realm,           'Atomos'
+			set :password_digest, ''
+			set :private_key,     ''
 		end
 
 		before do
@@ -175,7 +192,7 @@ module Atomos
 
 			def parse_xml(xml)
 				now = DateTime.now
-				if @config.respond_to? :timezone
+				if @config.timezone
 					now = now.new_offset(@config.timezone.to_f / 24)
 				end
 
