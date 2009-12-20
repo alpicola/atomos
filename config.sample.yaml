@@ -1,8 +1,13 @@
-:url:    http://localhost:9393
+## settings
+:url:    http://localhost:4567
 :title:  Atomos Blog
 :author: Anonymous
 
-# specify your data-store as URL
+# authorization
+:username: admin
+:password: password
+
+# specify your data-store as URL or hash
 :database: sqlite3://entries.db
 
 # the number of entries rendered per page
@@ -10,12 +15,3 @@
 
 # use a timezone different from the server
 # :timezone: +09:00
-
-# parameters used in Digest Authorization
-# password_digest is a value of
-#   Digest::MD5.hexdigest(username + ':' + realm + ':' + password)
-# private_key is an arbitrary string known only to the server
-:username:        admin
-:realm:           Atomos
-:password_digest: 728a94cb7f4c65c9145d4942136d4787
-:private_key:     90e413fc561a367fa9225dc50f01bc4b

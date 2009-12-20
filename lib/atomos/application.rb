@@ -2,7 +2,7 @@ require 'sinatra/base'
 require 'erb'
 require 'builder'
 require 'rexml/document'
-require 'digest/md5'
+require 'digest/sha1'
 require 'date'
 require 'time'
 
@@ -48,14 +48,12 @@ module Atomos
 			set :title,  'Atomos Blog'
 			set :author, 'Anonymous'
 
+			set :username, 'admin'
+			set :password, ''
+
 			set :per_page, 10
 
 			set :timezone, nil
-
-			set :username,        'admin'
-			set :realm,           'Atomos'
-			set :password_digest, ''
-			set :private_key,     ''
 		end
 
 		before do
@@ -148,44 +146,30 @@ module Atomos
 
 		helpers do
 			def authorize
-				case request.env['HTTP_AUTHORIZATION']
-				when /\ADigest\s*/
+				case request.env['HTTP_X_WSSE']
+				when /\AUsernameToken\s*/
 					header = {}
 					$'.scan(/\w+\=(?:"[^"]+"|[^,]+)/) do |param|
 						k, v = param.split('=', 2)
 						header[k] = (/\A"(.*)"\Z/ =~ v) ? $1 : v
 					end
 
-					timestamp, digest = header['nonce'].unpack('m')[0].split(' ', 2)
-					return unless md5(timestamp, @config.private_key) == digest &&
-					              (Time.now - Time.iso8601(timestamp)) < 60
+					if header['Username'] == @config.username &&
+					   (Time.now - Time.iso8601(header['Created'])) < 60
 
-					header['a1'] = @config.password_digest
-					header['a2'] = md5(request.request_method, header['uri'])
-					header['response'] == md5(*header.values_at(*%w|a1 nonce nc cnonce qop a2|))
+						digest = Digest::SHA1.digest([
+							header['Nonce'].unpack('m')[0],
+							header['Created'],
+							@config.password
+						].join)
+						digest == header['PasswordDigest'].unpack('m')[0]
+					end
 				end
 			end
 
 			def authorize!
-				return if authorized?
-
-				timestamp = Time.now.iso8601
-				nonce = [timestamp, md5(timestamp, @config.private_key)].join(' ')
-				headers 'WWW-Authenticate' => "Digest " + {
-					'realm'     => '"%s"' % options.realm,
-					'algorithm' => 'MD5',
-					'qop'       => 'auth',
-					'nonce'     => '"%s"' % [nonce].pack('m').gsub("\n", '')
-				}.map {|i| i.join('=') }.join(', ')
+				return if @authorized ||= authorize
 				error 401, 'Authorization Required'
-			end
-
-			def authorized?
-				@authorized ||= authorize
-			end
-
-			def md5(*args)
-				Digest::MD5.hexdigest(args.join(':'))
 			end
 
 			def parse_xml(xml)
