@@ -1,7 +1,7 @@
 require 'dm-core'
 require 'dm-validations'
 require 'dm-aggregates'
-require 'rdiscount'
+require 'maruku'
 require 'date'
 
 module Atomos
@@ -27,7 +27,7 @@ module Atomos
 		end
 
 		def html 
-			@html ||= RDiscount.new(content).to_html
+			@html ||= Maruku.new(content).to_html
 		end
 
 		def self.circa(year, month=nil, day=nil)

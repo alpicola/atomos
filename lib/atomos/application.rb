@@ -100,6 +100,7 @@ module Atomos
 		end
 
 		get '/service/' do
+			content_type 'application/atom+xml', :charset => 'utf-8'
 			builder :service, :layout => false
 		end
 
@@ -175,11 +176,11 @@ module Atomos
 			def parse_xml(xml)
 				now = DateTime.now
 				if @config.timezone
-					now = now.new_offset(@config.timezone.to_f / 24)
+					now = now.new_offset(@config.timezone.to_f / 1440)
 				end
 
 				root = REXML::Document.new(xml).root
-				root.elements.inject(nil, {'updated' => now}) do |entry, element|
+				root.elements.to_a.inject({'updated' => now}) do |entry, element|
 					case element.name
 					when 'title', 'content'
 						entry[element.name] = element.text
