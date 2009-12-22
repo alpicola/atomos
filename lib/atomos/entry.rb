@@ -9,7 +9,7 @@ module Atomos
 		include DataMapper::Resource
 
 		property :id,        Serial
-		property :slug,      String, :format => /\A[\w\-.~]+\z/
+		property :slug,      String, :format => /\A[\w\-]+\z/
 		property :title,     String
 		property :content,   Text
 		property :updated,   DateTime

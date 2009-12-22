@@ -14,12 +14,13 @@ There are few features :-)
 userscript example:
 
 * http://gist.github.com/259339 (Firefox)
+* http://gist.github.com/260425 (Chrome)
 
 Requirements
 ------------
 
-	$ sudo gem install sinatra builder rdiscount
-	$ sudo gem install dm-core dm-validations dm-aggregates
+	% sudo gem install sinatra builder maruku do_sqlite3
+	% sudo gem install dm-core dm-validations dm-aggregates
 
 License
 -------

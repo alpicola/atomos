@@ -7,6 +7,7 @@ require 'date'
 require 'time'
 
 module Atomos
+	class NotFound < Sinatra::NotFound; end
 	class Application < Sinatra::Base
 
 		# overrides Sinatra::Base's!
@@ -43,6 +44,8 @@ module Atomos
 			set :root,   File.expand_path('../..', File.dirname(__FILE__))
 			set :run,    true
 			set :static, true
+
+			set :environment, :production
 
 			set :url,    'http://localhost:4567'
 			set :title,  'Atomos Blog'
@@ -100,7 +103,7 @@ module Atomos
 		end
 
 		get '/service/' do
-			content_type 'application/atom+xml', :charset => 'utf-8'
+			content_type 'application/atomsvc+xml', :charset => 'utf-8'
 			builder :service, :layout => false
 		end
 
@@ -113,7 +116,8 @@ module Atomos
 		post '/atom/' do
 			authorize!
 			data = parse_xml(request.body.read).merge(:slug => request.env['HTTP_SLUG'])
-			@entry = Entry.create(data) or error 400, 'Bad Reqest'
+			@entry = Entry.new(data)
+			@entry.save or error 400, 'Bad Reqest'
 			status 201
 			headers "Location" => @entry.url
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'

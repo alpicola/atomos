@@ -1,6 +1,6 @@
 #!/usr/bin/env rackup
 
-$LOAD_PATH.unshift 'lib'
+$LOAD_PATH << 'lib'
 
 require 'rubygems'
 require 'atomos'
