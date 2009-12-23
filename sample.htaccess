@@ -9,3 +9,5 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ dispatch.cgi/$1 [L,QSA]
+
+SetEnv RACK_ENV production

@@ -39,13 +39,16 @@ module Atomos
 			end
 		end
 
+		def render(engine, data, options={}, locals={}, &block)
+			@page_id = data.to_s
+			super
+		end
+
 		# default settings
 		configure do
 			set :root,   File.expand_path('../..', File.dirname(__FILE__))
 			set :run,    true
 			set :static, true
-
-			set :environment, :production
 
 			set :url,    'http://localhost:4567'
 			set :title,  'Atomos Blog'
@@ -81,24 +84,30 @@ module Atomos
 
 		get '/:year/' do
 			@entries = Entry.circa(params[:year].to_i)
-			erb :home
+			raise NotFound if @entries.empty?
+			@title.insert(0, @entries.first.published.strftime('%Y | '))
+			erb :circa
 		end
 
 		get '/:year/:month/' do
 			@entries = Entry.circa(params[:year].to_i, params[:month].to_i)
-			erb :home
+			raise NotFound if @entries.empty?
+			@title.insert(0, @entries.first.published.strftime('%Y %B | '))
+			erb :circa
 		end
 
 		get '/:year/:month/:day/' do
 			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
 			@entries = Entry.circa(*date)
-			erb :home
+			raise NotFound if @entries.empty?
+			@title.insert(0, @entries.first.published.strftime('%Y %B %d | ').sub(/ 0/, ' '))
+			erb :circa
 		end
 
 		get '/:year/:month/:day/:slug' do
 			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
 			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
-			@title << ' - ' << @entry.title 
+			@title.insert(0, @entry.title + ' | ')
 			erb :entry
 		end
 
@@ -115,11 +124,10 @@ module Atomos
 
 		post '/atom/' do
 			authorize!
-			data = parse_xml(request.body.read).merge(:slug => request.env['HTTP_SLUG'])
-			@entry = Entry.new(data)
+			@entry = Entry.new(parse_xml(request.body.read).merge(:slug => request.env['HTTP_SLUG']))
 			@entry.save or error 400, 'Bad Reqest'
 			status 201
-			headers "Location" => @entry.url
+			headers 'Location' => @entry.url
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
 			builder :entry, :layout => false
 		end
