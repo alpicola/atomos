@@ -69,19 +69,13 @@ body {
 	background-color: #fff;
 }
 
-#home #container {
+#container {
 	margin: 0 auto;
 	width: 50em;
 }
 
 #circa #container {
-	margin: 0 auto;
 	width: 35em;
-}
-
-#entry #container {
-	margin: 0 auto;
-	width: 50em;
 }
 
 #header {

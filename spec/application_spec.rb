@@ -113,21 +113,7 @@ describe Application do
 		last_response.status.should == 401
 	end
 
-	it 'should not accept POST request without a slug' do
-		lambda {
-			header 'X-WSSE', WSSE.header('admin', 'password')
-			post('/atom/', <<-ENTRY).status.should == 400
-				<entry xmlns="http://www.w3.org/2005/Atom">
-					<title>title</title>
-					<content type="text/plain">content</content>
-				</entry>
-			ENTRY
-		}.should_not change(Entry, :count)
-
-		last_response.status.should == 400
-	end
-
-	it 'should not accept POST request with a not well-formed entity body' do
+	it 'should not accept POST request with a malformed entity body' do
 		lambda {
 			header 'Slug', 'slug'
 			header 'X-WSSE', WSSE.header('admin', 'password')

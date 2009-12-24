@@ -26,8 +26,12 @@ module Atomos
 			"#{Application.url}/atom/#{published.strftime('%Y/%m/%d')}/#{slug}"
 		end
 
-		def html 
-			@html ||= Maruku.new(content).to_html
+		def content
+			@html ||= Maruku.new(markdown).to_html
+		end
+
+		def markdown
+			attribute_get(:content)
 		end
 
 		def self.circa(year, month=nil, day=nil)

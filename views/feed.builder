@@ -10,7 +10,7 @@ xml.feed(:xmlns => 'http://www.w3.org/2005/Atom') do
 		xml.entry do
 			xml.id           entry.url
 			xml.title        entry.title
-			xml.content      entry.html, :type => 'html'
+			xml.content      entry.content, :type => 'html'
 			xml.updated      entry.updated
 			xml.published    entry.published
 			xml.link :rel => "edit",      :href => entry.edit_url

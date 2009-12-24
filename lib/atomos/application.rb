@@ -40,7 +40,7 @@ module Atomos
 		end
 
 		def render(engine, data, options={}, locals={}, &block)
-			@page_id = data.to_s
+			@page_id ||= data.to_s if data.is_a? Symbol
 			super
 		end
 
@@ -124,10 +124,13 @@ module Atomos
 
 		post '/atom/' do
 			authorize!
-			@entry = Entry.new(parse_xml(request.body.read).merge(:slug => request.env['HTTP_SLUG']))
+			@entry = Entry.new(parse_xml(request.body.read))
+			@entry.slug = request.env['HTTP_SLUG'].to_s
+			@entry.slug = @entry.title.downcase.scan(/[a-z0-9]+/).join('-') if @entry.slug.empty?
+			@entry.slug = @entry.published.strftime('%H%M') if @entry.slug.empty?
 			@entry.save or error 400, 'Bad Reqest'
 			status 201
-			headers 'Location' => @entry.url
+			response['Location'] = @entry.url
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
 			builder :entry, :layout => false
 		end

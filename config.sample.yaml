@@ -8,7 +8,7 @@
 :password: password
 
 # specify your data-store as URL or hash
-:database: sqlite3://entries.db
+:database: sqlite3:entries.db
 
 # the number of entries rendered per page
 :per_page: 10
