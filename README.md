@@ -26,7 +26,7 @@ Then:
 
 	$ rackup
 
-And see http://localhost:4567/
+And see http://localhost:9292/
 
 AtomPub
 -------
@@ -46,4 +46,4 @@ License
 
 MIT License
 
-Copyright (C) 2009 Yasuhiro Fuse &lt;fuse@5ivestar.org&gt;
+Copyright (c) 2009 Yasuhiro Fuse &lt;fuse@5ivestar.org&gt;

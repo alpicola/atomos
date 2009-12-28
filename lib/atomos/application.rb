@@ -47,15 +47,14 @@ module Atomos
 		# default settings
 		configure do
 			set :root,   File.expand_path('../..', File.dirname(__FILE__))
-			set :run,    true
 			set :static, true
 
-			set :url,    'http://localhost:4567'
+			set :url,    'http://localhost:9292'
 			set :title,  'Atomos Blog'
 			set :author, 'Anonymous'
 
 			set :username, 'admin'
-			set :password, ''
+			set :password, 'password'
 
 			set :per_page, 10
 
@@ -86,14 +85,14 @@ module Atomos
 			@entries = Entry.circa(params[:year].to_i)
 			raise NotFound if @entries.empty?
 			@title.insert(0, @entries.first.published.strftime('%Y | '))
-			erb :circa
+			erb :list
 		end
 
 		get '/:year/:month/' do
 			@entries = Entry.circa(params[:year].to_i, params[:month].to_i)
 			raise NotFound if @entries.empty?
 			@title.insert(0, @entries.first.published.strftime('%Y %B | '))
-			erb :circa
+			erb :list
 		end
 
 		get '/:year/:month/:day/' do
@@ -101,7 +100,7 @@ module Atomos
 			@entries = Entry.circa(*date)
 			raise NotFound if @entries.empty?
 			@title.insert(0, @entries.first.published.strftime('%Y %B %d | ').sub(/ 0/, ' '))
-			erb :circa
+			erb :list
 		end
 
 		get '/:year/:month/:day/:slug' do
@@ -125,9 +124,10 @@ module Atomos
 		post '/atom/' do
 			authorize!
 			@entry = Entry.new(parse_xml(request.body.read))
-			@entry.slug = request.env['HTTP_SLUG'].to_s
-			@entry.slug = @entry.title.downcase.scan(/[a-z0-9]+/).join('-') if @entry.slug.empty?
-			@entry.slug = @entry.published.strftime('%H%M') if @entry.slug.empty?
+			slug = request.env['HTTP_SLUG'].to_s
+			slug = @entry.title.downcase.scan(/[a-z0-9]+/).join('-') if slug.empty?
+			slug = @entry.published.strftime('%H%M') if slug.empty?
+			@entry.slug = slug
 			@entry.save or error 400, 'Bad Reqest'
 			status 201
 			response['Location'] = @entry.url
