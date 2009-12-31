@@ -123,6 +123,11 @@ body {
 	background: transparent;
 }
 
+#content .entry h3 {
+	line-height: 1.1;
+	font-size: 120%;
+}
+
 #content .meta {
 	margin-top: -1em;
 	color: #616263;
@@ -179,6 +184,10 @@ body {
 	color: #000;
 	text-decoration: underline;
 	background: transparent;
+}
+
+#content .message {
+	text-align: center;
 }
 
 #footer {

@@ -3,6 +3,7 @@ require 'dm-validations'
 require 'dm-aggregates'
 require 'maruku'
 require 'date'
+require 'digest/md5'
 
 module Atomos
 	class Entry

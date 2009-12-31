@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'erb'
 require 'builder'
 require 'rexml/document'
+require 'digest/md5'
 require 'digest/sha1'
 require 'date'
 require 'time'
@@ -116,7 +117,8 @@ module Atomos
 		end
 
 		get '/atom/' do
-			@entries = Entry.all(:limit => 10)
+			@entries = Entry.all(:order => [:updated.desc], :limit => 10)
+			etag Digest::MD5.hexdigest(request.url + @entries.map {|e| e.updated }.join)
 			content_type 'application/atom+xml', :charset => 'utf-8'
 			builder :feed, :layout => false
 		end
@@ -128,10 +130,11 @@ module Atomos
 			slug = @entry.title.downcase.scan(/[a-z0-9]+/).join('-') if slug.empty?
 			slug = @entry.published.strftime('%H%M') if slug.empty?
 			@entry.slug = slug
-			@entry.save or error 400, 'Bad Reqest'
+			@entry.save or halt 400, 'Bad Reqest'
 			status 201
-			response['Location'] = @entry.url
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
+			etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
+			response['Location'] = @entry.url
 			builder :entry, :layout => false
 		end
 
@@ -140,6 +143,7 @@ module Atomos
 			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
 			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
+			etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
 			builder :entry, :layout => false
 		end
 
@@ -147,8 +151,9 @@ module Atomos
 			authorize!
 			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
 			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
-			@entry.update(parse_xml(request.body.read)) or error 400, 'Bad Reqest'
+			@entry.update(parse_xml(request.body.read)) or halt 400, 'Bad Reqest'
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
+			etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
 			builder :entry, :layout => false
 		end
 
@@ -156,8 +161,14 @@ module Atomos
 			authorize!
 			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
 			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
-			@entry.destroy!
+			@entry.destroy
 			''
+		end
+
+		error 404 do
+			@message = "sorry, nothig found for <code>#{request.url}</code>."
+			content_type 'text/html', :charset => 'utf-8'
+			erb :error
 		end
 
 		helpers do
@@ -185,7 +196,7 @@ module Atomos
 
 			def authorize!
 				return if @authorized ||= authorize
-				error 401, 'Authorization Required'
+				halt 401, 'Authorization Required'
 			end
 
 			def parse_xml(xml)
@@ -205,7 +216,7 @@ module Atomos
 					entry
 				end
 			rescue
-				error 400, 'Bad Reqest'
+				halt 400, 'Bad Reqest'
 			end
 		end
 	end
