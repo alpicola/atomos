@@ -1,0 +1,22 @@
+!!! Strict
+%html(lang="ja" xml:lang="ja" xmlns="http://www.w3.org/1999/xhtml")
+  %head
+    %meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    %meta(http-equiv="Content-Style-Type" content="text/css")
+    %meta(http-equiv="Content-Script-Type" content="text/javascript")
+    %title= @title
+    %link(type="text/css" href="#{@config.url}/style.css" rel="stylesheet" media="all")
+    %link(type="application/atom+xml" href="#{@config.url}/atom/" rel="alternate" title="Atom")
+  %body(id=@page_id)
+    #container
+      #header
+        %h1
+          %a(href="#{@config.url}/")= @config.title
+      #content
+        = yield
+      #footer
+        %p
+          Copyright &copy; 2010 by #{@config.author}
+        %p
+          powered by
+          %a(href="http://github.com/5ivestar/atomos") atomos

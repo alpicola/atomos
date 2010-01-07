@@ -18,6 +18,10 @@ a:hover {
 	text-decoration: underline;
 }
 
+b, strong {
+	font-weight: bold;
+}
+
 h1, h2, h3 {
 	line-height: 1.1;
 	font-family: Georgia, 'bitstream vera serif', sans-serif;
@@ -26,7 +30,7 @@ h1, h2, h3 {
 	color: #000;
 }
 
-p, ul, ol, dl, pre, blockquote, table {
+p, ul, ol, dl, pre, blockquote, table, ins {
 	margin: 1.4em 0;
 }
 
@@ -52,6 +56,24 @@ pre {
 	overflow: auto;
 	color: #222;
 	background-color: #f4f5f5;
+}
+
+ins {
+	display: block;
+	border: 1px solid #ccc;
+	padding: 0.5em;
+	line-height: 1.8;
+	color: #555;
+	font-size: 90%;
+	text-decoration: none;
+}
+
+p ins, ul ins, ol ins, dl ins,
+pre ins, blockquote ins, table ins {
+	display: inline;
+	border: none;
+	padding: 0;
+	text-decoration: underline;
 }
 
 

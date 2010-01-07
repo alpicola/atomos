@@ -1,5 +1,5 @@
 require 'sinatra/base'
-require 'erb'
+require 'haml'
 require 'builder'
 require 'rexml/document'
 require 'digest/md5'
@@ -16,7 +16,7 @@ module Atomos
 			keys = []
 			if path.respond_to? :to_str
 				special_chars = %w{. + ( )}
-				patterns = { 'year' => /\d{4}/, 'month' => /\d{2}/, 'day' => /\d{2}/ }
+				patterns = {'year' => /\d{4}/, 'month' => /\d{2}/, 'day' => /\d{2}/}
 				pattern =
 					path.to_str.gsub(/(:(\w+)|[\*#{special_chars.join}])/) do |match|
 						case match
@@ -72,43 +72,42 @@ module Atomos
 
 		get '/' do
 			@entries = Entry.all(:limit => @per_page)
-			erb :home
+			haml :home
 		end
 
 		get '/page/:page' do
 			@page = params[:page].to_i
 			raise NotFound unless (1..@pages).include? @page
 			@entries = Entry.all(:offset => (@page-1) * @per_page, :limit => @per_page)
-			erb :home
+			haml :home
 		end
 
 		get '/:year/' do
-			@entries = Entry.circa(params[:year].to_i)
+			@entries = Entry.circa(params[:year])
 			raise NotFound if @entries.empty?
 			@title.insert(0, @entries.first.published.strftime('%Y | '))
-			erb :list
+			haml :list
 		end
 
 		get '/:year/:month/' do
-			@entries = Entry.circa(params[:year].to_i, params[:month].to_i)
+			@entries = Entry.circa(params[:year], params[:month])
 			raise NotFound if @entries.empty?
 			@title.insert(0, @entries.first.published.strftime('%Y %B | '))
-			erb :list
+			haml :list
 		end
 
 		get '/:year/:month/:day/' do
-			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
-			@entries = Entry.circa(*date)
+			@entries = Entry.circa(params[:year], params[:month], params[:day])
 			raise NotFound if @entries.empty?
 			@title.insert(0, @entries.first.published.strftime('%Y %B %d | ').sub(/ 0/, ' '))
-			erb :list
+			haml :list
 		end
 
 		get '/:year/:month/:day/:slug' do
-			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
-			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
+			date = Entry.circa(params[:year], params[:month], params[:day])
+			@entry = date.first(:slug => params[:slug]) or raise NotFound
 			@title.insert(0, @entry.title + ' | ')
-			erb :entry
+			haml :entry
 		end
 
 		get '/service/' do
@@ -140,8 +139,8 @@ module Atomos
 
 		get '/atom/:year/:month/:day/:slug' do
 			authorize!
-			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
-			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
+			date = Entry.circa(params[:year], params[:month], params[:day])
+			@entry = date.first(:slug => params[:slug]) or raise NotFound
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
 			etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
 			builder :entry, :layout => false
@@ -149,8 +148,8 @@ module Atomos
 
 		put '/atom/:year/:month/:day/:slug' do
 			authorize!
-			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
-			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
+			date = Entry.circa(params[:year], params[:month], params[:day])
+			@entry = date.first(:slug => params[:slug]) or raise NotFound
 			@entry.update(parse_xml(request.body.read)) or halt 400, 'Bad Reqest'
 			content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
 			etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
@@ -159,16 +158,16 @@ module Atomos
 
 		delete '/atom/:year/:month/:day/:slug' do
 			authorize!
-			date = params.values_at(:year, :month, :day).map {|s| s.to_i }
-			@entry = Entry.circa(*date).first(:slug => params[:slug]) or raise NotFound
+			date = Entry.circa(params[:year], params[:month], params[:day])
+			@entry = date.first(:slug => params[:slug]) or raise NotFound
 			@entry.destroy
 			''
 		end
 
 		error 404 do
-			@message = "sorry, nothig found for <code>#{request.url}</code>."
+			@message = "sorry, nothig found for <code>#{request.env['REQUEST_URI']}</code>."
 			content_type 'text/html', :charset => 'utf-8'
-			erb :error
+			haml :error
 		end
 
 		helpers do

@@ -3,7 +3,6 @@ require 'dm-validations'
 require 'dm-aggregates'
 require 'maruku'
 require 'date'
-require 'digest/md5'
 
 module Atomos
 	class Entry
@@ -11,7 +10,7 @@ module Atomos
 
 		property :id,        Serial
 		property :slug,      String, :format => /\A[a-z0-9\-]+\z/
-		property :title,     String
+		property :title,     String, :length => (1..100)
 		property :content,   Text
 		property :updated,   DateTime
 		property :published, DateTime, :default => lambda {|r,p| r.updated }
@@ -38,16 +37,18 @@ module Atomos
 		def self.circa(year, month=nil, day=nil)
 			case
 			when day
-				from = Date.new(year, month, day)
+				from = Date.new(year.to_i, month.to_i, day.to_i)
 				to   = from + 1
 			when month
-				from = Date.new(year, month, 1)
+				from = Date.new(year.to_i, month.to_i, 1)
 				to   = from >> 1
 			when year
-				from = Date.new(year, 1, 1)
-				to   = Date.new(year + 1, 1, 1)
+				from = Date.new(year.to_i, 1, 1)
+				to   = Date.new(year.to_i + 1, 1, 1)
 			end
 			all(:published.gte => from, :published.lt => to)
+		rescue ArgumentError => e
+			all.clear
 		end
 	end
 end

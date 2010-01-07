@@ -1,9 +1,0 @@
-			<% @entries.each do |entry| %>
-				<div class="published">
-					<span class="day"><%= entry.published.strftime("%Y-%m-%d") %></span>
-					posted at <%= entry.published.strftime("%I:%M%p").sub(/^0/, '').downcase %>
-				</div>
-				<div class="entry">
-					<h2><a href="<%= entry.url %>"><%= entry.title %></a></h2>
-				</div>
-			<% end %>

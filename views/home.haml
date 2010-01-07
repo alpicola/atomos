@@ -1,0 +1,22 @@
+- @entries.each do |entry|
+  %div.published.autopagerize_page_element
+    %span.day= entry.published.strftime('%Y-%m-%d')
+    posted at #{entry.published.strftime("%I:%M%p").sub(/^0/, '').downcase}
+  %div.entry.autopagerize_page_element
+    %h2
+      = entry.title
+    %div
+      ~ entry.content
+    %p.meta
+      %a(href="#{entry.url}") permalink
+- if @pages > 1
+  %ul.page
+    - if @page == 2
+      %li
+        %a(href="#{@config.url}/" rel="prev") &#171; Newer
+    - if @page > 2
+      %li
+        %a(href="#{@config.url}/page/#{@page-1}" rel="prev") &#171; Newer
+    - if @page < @pages
+      %li
+        %a(href="#{@config.url}/page/#{@page+1}" rel="next") Older &#187;

@@ -1,0 +1,7 @@
+- @entries.each do |entry|
+  %div.published.autopagerize_page_element
+    %span.day= entry.published.strftime('%Y-%m-%d')
+    posted at #{entry.published.strftime("%I:%M%p").sub(/^0/, '').downcase}
+  %div.entry.autopagerize_page_element
+    %h2
+      %a(href="#{entry.url}")= entry.title
