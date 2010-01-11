@@ -9,8 +9,8 @@ require 'yaml'
 ENV['PATH_INFO'] = '/' if ENV['PATH_INFO'].to_s.empty?
 
 begin
-	opts = File.open('config.yaml') {|f| YAML.load(f) }
-	Rack::Handler::CGI.run Atomos.new(opts)
+  opts = YAML.load_file('config.yaml')
+  Rack::Handler::CGI.run Atomos.new(opts)
 rescue Errno::ENOENT
-	Rack::Handler::CGI.run Atomos.new
+  Rack::Handler::CGI.run Atomos.new
 end

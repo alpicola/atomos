@@ -7,8 +7,8 @@ require 'atomos'
 require 'yaml'
 
 begin
-	opts = File.open('config.yaml') {|f| YAML.load(f) }
-	run Atomos.new(opts)
+  opts = YAML.load_file('config.yaml')
+  run Atomos.new(opts)
 rescue Errno::ENOENT
-	run Atomos.new
+  run Atomos.new
 end

@@ -8,14 +8,14 @@ Features
 
 There are few features :-)
 
-* Markdown (provided by Maruku)
+* Markdown (provided by RDiscount)
 * management of posts via Atom Publishing Protocol
 
 Requirements
 ------------
 
-	$ sudo gem install sinatra builder maruku do_sqlite3
-	$ sudo gem install dm-core dm-validations dm-aggregates
+    $ sudo gem install sinatra haml builder rdiscount do_sqlite3
+    $ sudo gem install dm-core dm-validations dm-aggregates
 
 Setup
 -----
@@ -24,7 +24,7 @@ Edit `config.sample.yaml` and rename it to `config.yaml`.
 
 Then:
 
-	$ rackup
+    $ rackup
 
 And see http://localhost:9292/
 
