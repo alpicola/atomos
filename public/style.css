@@ -133,15 +133,10 @@ body {
 
 #content .entry h2 a,
 #content .entry h2 a:link,
+#content .entry h2 a:hover,
 #content .entry h2 a:visited {
     color: #000;
     text-decoration: none;
-    background: transparent;
-}
-
-#content .entry h2 a:hover {
-    color: #000;
-    text-decoration: underline;
     background: transparent;
 }
 
@@ -151,13 +146,11 @@ body {
 }
 
 #content .meta {
-    margin-top: -1em;
+    margin-top: -0.5em;
     color: #616263;
-    font-variant: small-caps;
-}
-
-#content .meta a {
-    color: #616263;
+    font-size: 75%;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 #content .published {

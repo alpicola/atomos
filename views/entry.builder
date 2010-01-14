@@ -8,4 +8,7 @@ xml.entry(:xmlns => 'http://www.w3.org/2005/Atom') do
   xml.tag! 'atomos:markdown', @entry.markdown, 'xmlns:atomos' => 'http://daringfireball.net/projects/markdown/'
   xml.link :rel => "edit",      :href => @entry.edit_url
   xml.link :rel => "alternate", :href => @entry.url
+  @entry.tags.each do |tag|
+    xml.category :term => tag
+  end
 end

@@ -15,6 +15,9 @@ xml.feed(:xmlns => 'http://www.w3.org/2005/Atom') do
       xml.published    entry.published
       xml.link :rel => "edit",      :href => entry.edit_url
       xml.link :rel => "alternate", :href => entry.url
+      entry.tags.each do |tag|
+        xml.category :term => tag
+      end
     end
   end
 end

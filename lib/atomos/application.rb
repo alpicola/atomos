@@ -50,7 +50,7 @@ module Atomos
       set :root,   File.expand_path('../..', File.dirname(__FILE__))
       set :static, true
 
-      set :url,    'http://localhost:9292'
+      set :url,    ''
       set :title,  'Atomos Blog'
       set :author, 'Anonymous'
 
@@ -65,24 +65,30 @@ module Atomos
     end
 
     before do
-      @config   = options
-      @title    = options.title.dup
-      @page     = 1
-      @per_page = @config.per_page
-      # In Ruby 1.9, `Entry` can't be directly referred from before filters 
-      @pages    = (Atomos::Entry.count + @per_page - 1) / @per_page
+      @config = options
+      @title  = options.title.dup
     end
 
     get '/' do
-      @entries = Entry.all(:limit => @per_page)
+      @page = 1
+      @pages = (Entry.count + @config.per_page - 1) / @config.per_page
+      @entries = Entry.all(:limit => @config.per_page)
       haml :home
     end
 
     get '/page/:page' do
       @page = params[:page].to_i
-      raise NotFound unless (1..@pages).include? @page
-      @entries = Entry.all(:offset => (@page-1) * @per_page, :limit => @per_page)
+      @pages = (Entry.count + @config.per_page - 1) / @config.per_page
+      @entries = Entry.all(:offset => (@page-1) * @config.per_page, :limit => @config.per_page)
+      raise NotFound if @entries.empty?
       haml :home
+    end
+
+    get '/tag/:tag' do
+      @entries = Entry.tagged(params[:tag])
+      raise NotFound if @entries.empty?
+      @title.insert(0, params[:tag] + ' | ')
+      haml :list
     end
 
     get '/:year/' do
@@ -113,7 +119,7 @@ module Atomos
       haml :entry
     end
 
-    get '/service/' do
+    get '/service' do
       content_type 'application/atomsvc+xml', :charset => 'utf-8'
       builder :service, :layout => false
     end
@@ -135,7 +141,6 @@ module Atomos
       @entry.save or halt 400, 'Bad Reqest'
       status 201
       content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
-      etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
       response['Location'] = @entry.url
       builder :entry, :layout => false
     end
@@ -145,7 +150,7 @@ module Atomos
       date = Entry.circa(params[:year], params[:month], params[:day])
       @entry = date.first(:slug => params[:slug]) or raise NotFound
       content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
-      etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
+      etag Digest::MD5.hexdigest(request.url + @entry.updated.to_s)
       builder :entry, :layout => false
     end
 
@@ -155,7 +160,6 @@ module Atomos
       @entry = date.first(:slug => params[:slug]) or raise NotFound
       @entry.update(parse_xml(request.body.read)) or halt 400, 'Bad Reqest'
       content_type 'application/atom+xml;type=entry', :charset => 'utf-8'
-      etag Digest::MD5.hexdigest(@entry.url + @entry.updated.to_s)
       builder :entry, :layout => false
     end
 
@@ -214,6 +218,8 @@ module Atomos
             entry[element.name] = element.text
           when 'updated', 'published'
             entry[element.name] = DateTime.strptime(element.text)
+          when 'category'
+            (entry['tags'] ||= []) << element.attributes['term']
           end
           entry
         end

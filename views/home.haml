@@ -4,11 +4,13 @@
     posted at #{entry.published.strftime("%I:%M%p").sub(/^0/, '').downcase}
   %div.entry.autopagerize_page_element
     %h2
-      = entry.title
+      %a(href="#{entry.url}")= entry.title
     %div
       ~ entry.content
     %p.meta
-      %a(href="#{entry.url}") permalink
+      filed in
+      - entry.tags.each do |tag|
+        %a(href="#{@config.url}/tag/#{tag}" rel="tag")= tag
 - if @pages > 1
   %ul.page
     - if @page == 2

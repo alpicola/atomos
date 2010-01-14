@@ -16,6 +16,8 @@ module Atomos
     property :published, DateTime, :default => lambda {|r,p| r.updated }
     validates_present :slug, :title, :content
 
+    has n, :tags, :through => Resource
+
     default_scope(:default).update(:order => [:published.desc])
 
     def url
@@ -34,6 +36,23 @@ module Atomos
       attribute_get(:content)
     end
 
+    def tags(query=nil)
+      relationships['tags'].get(self, query).map {|t| t.name }
+    end
+
+    def tags=(target)
+      target = target.to_a.map {|t| Tag.first_or_create(:name => t) }
+      relationships['tags'].set(self, target)
+    end
+
+    def self.tagged(tag)
+      if tag = Tag.first(:name => tag)
+        tag.entries
+      else
+        all.clear
+      end
+    end
+
     def self.circa(year, month=nil, day=nil)
       case
       when day
@@ -50,5 +69,14 @@ module Atomos
     rescue ArgumentError => e
       all.clear
     end
+  end
+
+  class Tag
+    include DataMapper::Resource
+
+    property :id,   Serial
+    property :name, String, :format => /\A[a-z0-9\-]+\z/
+
+    has n, :entries, :through => Resource
   end
 end
