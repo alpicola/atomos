@@ -13,7 +13,7 @@
         %h1
           %a(href="#{@config.url}/")= @config.title
       #content
-        = yield
+        != yield
       #footer
         %p
           Copyright &copy; #{Time.now.year} by #{@config.author}

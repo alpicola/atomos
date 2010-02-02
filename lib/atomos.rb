@@ -2,7 +2,7 @@ require 'atomos/application'
 require 'atomos/models'
 
 module Atomos
-  VERSION = '0.1.1'.freeze
+  VERSION = '0.2.0'.freeze
 
   def self.configure(opts={})
     DataMapper.setup(:default, opts[:database] || ENV['DATABASE_URL'])

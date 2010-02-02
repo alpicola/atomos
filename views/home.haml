@@ -6,11 +6,12 @@
     %h2
       %a(href="#{entry.url}")= entry.title
     %div
-      ~ entry.content
-    %p.meta
-      filed in
-      - entry.tags.each do |tag|
-        %a(href="#{@config.url}/tag/#{tag}" rel="tag")= tag
+      !~ entry.content
+    - if entry.tags.any?
+      %p.meta
+        filed in
+        - entry.tags.each do |tag|
+          %a(href="#{@config.url}/tag/#{tag}" rel="tag")= tag
 - if @pages > 1
   %ul.page
     - if @page == 2

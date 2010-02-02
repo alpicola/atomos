@@ -38,8 +38,7 @@ Posts can be created using POST request to the Collection URI and edited using P
 
 If you use default templates without large modification, the following userscript offers means of these operation.
 
-* http://gist.github.com/259339 (Firefox)
-* http://gist.github.com/260425 (Chrome)
+* http://gist.github.com/259339
 
 License
 -------

@@ -61,7 +61,7 @@ module Atomos
 
       set :timezone, nil
 
-      set :haml, :attr_wrapper => '"'
+      set :haml, :escape_html => true, :attr_wrapper => '"'
     end
 
     before do
@@ -227,5 +227,6 @@ module Atomos
         halt 400, 'Bad Reqest'
       end
     end
+
   end
 end
