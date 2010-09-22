@@ -1,4 +1,5 @@
 require 'dm-core'
+require 'dm-migrations'
 require 'dm-validations'
 require 'dm-aggregates'
 require 'rdiscount'
@@ -14,7 +15,7 @@ module Atomos
     property :content,   Text
     property :updated,   DateTime
     property :published, DateTime, :default => lambda {|r,p| r.updated }
-    validates_present :slug, :title, :content
+    validates_presence_of :slug, :title, :content
 
     has n, :tags, :through => Resource
 

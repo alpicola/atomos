@@ -61,7 +61,7 @@ module Atomos
 
       set :timezone, nil
 
-      set :haml, :escape_html => true, :attr_wrapper => '"'
+      set :haml, :escape_html => true, :ugly => false, :attr_wrapper => '"'
     end
 
     before do
@@ -198,6 +198,7 @@ module Atomos
             digest == header['PasswordDigest'].unpack('m')[0]
           end
         end
+      rescue
       end
 
       def authorize!

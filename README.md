@@ -14,8 +14,8 @@ There are few features :-)
 Requirements
 ------------
 
-    $ sudo gem install sinatra haml builder rdiscount do_sqlite3
-    $ sudo gem install dm-core dm-validations dm-aggregates
+    $ sudo gem install sinatra haml builder rdiscount
+    $ sudo gem install dm-core dm-migrations dm-validations dm-aggregates dm-sqlite-adapter
 
 Setup
 -----
@@ -45,4 +45,4 @@ License
 
 MIT License
 
-Copyright (c) 2009 Yasuhiro Fuse &lt;fuse@5ivestar.org&gt;
+Copyright (c) 2010 Ryo Tanaka &lt;ryo@alpico.la&gt;
